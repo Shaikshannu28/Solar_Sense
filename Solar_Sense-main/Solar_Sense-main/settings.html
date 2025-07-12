@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SolarSense | Settings</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Shared styles from dashboard */
+        :root {
+            --cosmic-deep: #0A0E17;
+            --solar-flare: #FF4D00;
+            --energy-core: #FFB800;
+            --quantum-teal: #00E3CC;
+            --starlight: rgba(255,255,255,0.9);
+            --glass-white: rgba(255,255,255,0.1);
+            --glass-border: rgba(255,255,255,0.2);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 180, 0, 0.15) 0%, transparent 25%),
+                radial-gradient(circle at 80% 70%, rgba(0, 227, 204, 0.15) 0%, transparent 25%),
+                linear-gradient(to bottom, #0A0E17, #0F1A2F);
+            color: var(--starlight);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><circle cx="50" cy="50" r="40" fill="none" stroke="%23FF6B35" stroke-width="0.5" stroke-opacity="0.3"/></svg>');
+            background-size: 50px 50px;
+            opacity: 0.3;
+            z-index: -1;
+            animation: solarPulse 20s infinite alternate;
+        }
+        
+        @keyframes solarPulse {
+            0% { opacity: 0.1; transform: scale(0.95); }
+            100% { opacity: 0.4; transform: scale(1.05); }
+        }
+        
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            background: rgba(10, 14, 23, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-right: 1px solid var(--glass-border);
+            padding: 2rem 1.5rem;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 3rem;
+            padding: 0 0.5rem;
+        }
+        
+        .logo-icon {
+            font-size: 2rem;
+            color: var(--energy-core);
+            margin-right: 1rem;
+            text-shadow: 0 0 15px rgba(255, 180, 0, 0.5);
+        }
+        
+        .logo-text {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--energy-core), var(--solar-flare));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .nav-item {
+            margin-bottom: 0.75rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 180, 0, 0.1), transparent);
+            transition: 0.5s;
+        }
+        
+        .nav-item:hover::before {
+            left: 100%;
+        }
+        
+        .nav-item.active {
+            background: linear-gradient(90deg, rgba(255, 180, 0, 0.1), transparent);
+            border-left: 3px solid var(--energy-core);
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            color: var(--starlight);
+            text-decoration: none;
+            padding: 0.8rem 1rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link i {
+            margin-right: 1rem;
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        
+        .nav-item.active .nav-link {
+            color: var(--energy-core);
+        }
+        
+        .nav-item:hover .nav-link {
+            transform: translateX(5px);
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            padding: 2rem 3rem;
+            position: relative;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+        }
+        
+        .page-title h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--starlight);
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-title p {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.95rem;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .notification-btn {
+            background: none;
+            border: none;
+            color: var(--starlight);
+            font-size: 1.2rem;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--solar-flare);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Settings-specific styles */
+        .settings-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        @media (max-width: 1200px) {
+            .settings-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .settings-card {
+            background: var(--glass-white);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--glass-border);
+        }
+        
+        .settings-card h3 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--starlight);
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .settings-card h3 i {
+            margin-right: 0.8rem;
+            color: var(--energy-core);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--starlight);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 6px;
+            color: var(--starlight);
+            font-family: 'Open Sans', sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--energy-core);
+            box-shadow: 0 0 0 2px rgba(255, 180, 0, 0.2);
+        }
+        
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23FFB800' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 12px;
+        }
+        
+        .form-check {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .form-check-input {
+            width: 18px;
+            height: 18px;
+            margin-right: 0.8rem;
+            accent-color: var(--energy-core);
+        }
+        
+        .form-check-label {
+            color: var(--starlight);
+        }
+        
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: var(--energy-core);
+            color: var(--cosmic-deep);
+        }
+        
+        .btn-primary:hover {
+            background: #E6A500;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: var(--starlight);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .system-info {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .system-info h4 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: var(--starlight);
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .info-item {
+            margin-bottom: 1rem;
+        }
+        
+        .info-item h5 {
+            margin-bottom: 0.3rem;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+        }
+        
+        .info-item p {
+            margin: 0;
+            font-weight: 600;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .main-content {
+                padding: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .btn-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-solar-panel"></i>
+                </div>
+                <div class="logo-text">SolarSense</div>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="fas fa-chart-line"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="analytics.html" class="nav-link">
+                        <i class="fas fa-chart-pie"></i>
+                        Analytics
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="impact.html" class="nav-link">
+                        <i class="fas fa-leaf"></i>
+                        Environmental Impact
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="emergency.html" class="nav-link">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Emergency System
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="maintenance.html" class="nav-link">
+                        <i class="fas fa-tools"></i>
+                        Maintenance
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a href="settings.html" class="nav-link">
+                        <i class="fas fa-cog"></i>
+                        Settings
+                    </a>
+                </li>
+            </ul>
+        </aside>
+        
+        <main class="main-content">
+            <div class="header">
+                <div class="page-title">
+                    <h2>System Settings</h2>
+                    <p>Configure your solar energy system preferences</p>
+                </div>
+                <div class="user-profile">
+                    <button class="notification-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">1</span>
+                    </button>
+                    <span class="user-name">Jessica D.</span>
+                </div>
+            </div>
+            
+            <div class="settings-container">
+                <div class="settings-card">
+                    <h3><i class="fas fa-user-cog"></i> User Preferences</h3>
+                    
+                    <div class="form-group">
+                        <label for="language">Language</label>
+                        <select id="language" class="form-control">
+                            <option>English</option>
+                            <option>Spanish</option>
+                            <option>French</option>
+                            <option>German</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="theme">Theme</label>
+                        <select id="theme" class="form-control">
+                            <option>Dark (Default)</option>
+                            <option>Light</option>
+                            <option>Solarized Dark</option>
+                            <option>Solarized Light</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="units">Measurement Units</label>
+                        <select id="units" class="form-control">
+                            <option>Metric (kW, kWh)</option>
+                            <option>Imperial (hp, BTU)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-check">
+                        <input type="checkbox" id="notifications" class="form-check-input" checked>
+                        <label for="notifications" class="form-check-label">Enable Email Notifications</label>
+                    </div>
+                    
+                    <div class="form-check">
+                        <input type="checkbox" id="alerts" class="form-check-input" checked>
+                        <label for="alerts" class="form-check-label">Enable System Alerts</label>
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button class="btn btn-primary">Save Preferences</button>
+                        <button class="btn btn-secondary">Reset to Defaults</button>
+                    </div>
+                </div>
+                
+                <div class="settings-card">
+                    <h3><i class="fas fa-sliders-h"></i> System Configuration</h3>
+                    
+                    <div class="form-group">
+                        <label for="battery-mode">Battery Storage Mode</label>
+                        <select id="battery-mode" class="form-control">
+                            <option>Automatic (Recommended)</option>
+                            <option>Self-Powered</option>
+                            <option>Backup Only</option>
+                            <option>Time-Based Control</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="export-limit">Grid Export Limit</label>
+                        <input type="range" id="export-limit" class="form-control" min="0" max="100" value="50">
+                        <div style="text-align: right; margin-top: 0.5rem; color: rgba(255,255,255,0.7);">50% of capacity</div>
+                    </div>
+                    
+                    <div class="form-check">
+                        <input type="checkbox" id="storm-mode" class="form-check-input">
+                        <label for="storm-mode" class="form-check-label">Enable Storm Watch Mode</label>
+                    </div>
+                    
+                    <div class="form-check">
+                        <input type="checkbox" id="remote-access" class="form-check-input" checked>
+                        <label for="remote-access" class="form-check-label">Allow Remote Monitoring</label>
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button class="btn btn-primary">Save Configuration</button>
+                        <button class="btn btn-secondary">Advanced Settings</button>
+                    </div>
+                </div>
+                
+                <div class="settings-card">
+                    <h3><i class="fas fa-shield-alt"></i> Security Settings</h3>
+                    
+                    <div class="form-group">
+                        <label for="password">Change Password</label>
+                        <input type="password" id="password" class="form-control" placeholder="New password">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirm-password">Confirm Password</label>
+                        <input type="password" id="confirm-password" class="form-control" placeholder="Confirm new password">
+                    </div>
+                    
+                    <div class="form-check">
+                        <input type="checkbox" id="two-factor" class="form-check-input">
+                        <label for="two-factor" class="form-check-label">Enable Two-Factor Authentication</label>
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button class="btn btn-primary">Update Security</button>
+                    </div>
+                </div>
+                
+                <div class="settings-card">
+                    <h3><i class="fas fa-bell"></i> Alert Preferences</h3>
+                    
+                    <div class="form-group">
+                        <label>Notification Methods</label>
+                        <div class="form-check">
+                            <input type="checkbox" id="email-alerts" class="form-check-input" checked>
+                            <label for="email-alerts" class="form-check-label">Email</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" id="push-alerts" class="form-check-input" checked>
+                            <label for="push-alerts" class="form-check-label">Push Notifications</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" id="sms-alerts" class="form-check-input">
+                            <label for="sms-alerts" class="form-check-label">SMS Text</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Alert Types</label>
+                        <div class="form-check">
+                            <input type="checkbox" id="system-alerts" class="form-check-input" checked>
+                            <label for="system-alerts" class="form-check-label">System Issues</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" id="maintenance-alerts" class="form-check-input" checked>
+                            <label for="maintenance-alerts" class="form-check-label">Maintenance Reminders</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" id="weather-alerts" class="form-check-input" checked>
+                            <label for="weather-alerts" class="form-check-label">Weather Warnings</label>
+                        </div>
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button class="btn btn-primary">Save Alert Settings</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="system-info">
+                <h4><i class="fas fa-info-circle"></i> System Information</h4>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <h5>System Version</h5>
+                        <p>SolarSense v2.3.5</p>
+                    </div>
+                    <div class="info-item">
+                        <h5>Last Updated</h5>
+                        <p>May 15, 2023</p>
+                    </div>
+                    <div class="info-item">
+                        <h5>System ID</h5>
+                        <p>SS-5X8B-2937</p>
+                    </div>
+                    <div class="info-item">
+                        <h5>API Version</h5>
+                        <p>v1.2.8</p>
+                    </div>
+                    <div class="info-item">
+                        <h5>Database Status</h5>
+                        <p>Connected</p>
+                    </div>
+                    <div class="info-item">
+                        <h5>Cloud Sync</h5>
+                        <p>Active</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+   <script>
+document.addEventListener("DOMContentLoaded", () => {
+    // Load settings from backend
+    fetch('/api/settings/get')
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("language").value = data.language;
+            document.getElementById("theme").value = data.theme;
+            document.getElementById("units").value = data.units;
+            document.getElementById("notifications").checked = data.alerts.email;
+            document.getElementById("alerts").checked = data.alerts.system;
+            document.getElementById("push-alerts").checked = data.alerts.push;
+            document.getElementById("sms-alerts").checked = data.alerts.sms;
+
+            document.getElementById("system-alerts").checked = data.alert_types.system;
+            document.getElementById("maintenance-alerts").checked = data.alert_types.maintenance;
+            document.getElementById("weather-alerts").checked = data.alert_types.weather;
+
+            document.getElementById("battery-mode").value = data.system_config.battery_mode;
+            document.getElementById("export-limit").value = data.system_config.export_limit;
+            document.getElementById("storm-mode").checked = data.system_config.storm_mode;
+            document.getElementById("remote-access").checked = data.system_config.remote_access;
+        });
+
+    // Save Preferences Button
+    document.querySelector("button.btn-primary").addEventListener("click", () => {
+        const preferences = {
+            language: document.getElementById("language").value,
+            theme: document.getElementById("theme").value,
+            units: document.getElementById("units").value,
+            alerts: {
+                email: document.getElementById("notifications").checked,
+                push: document.getElementById("push-alerts").checked,
+                sms: document.getElementById("sms-alerts").checked
+            },
+            alert_types: {
+                system: document.getElementById("system-alerts").checked,
+                maintenance: document.getElementById("maintenance-alerts").checked,
+                weather: document.getElementById("weather-alerts").checked
+            }
+        };
+
+        fetch('/api/settings/preferences', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(preferences)
+        })
+        .then(res => res.json())
+        .then(data => {
+            alert(data.message);
+            applyTheme(preferences.theme);
+            applyLanguage(preferences.language);
+        });
+    });
+
+    // Reset Preferences Button
+    document.querySelector("button.btn-secondary").addEventListener("click", () => {
+        fetch('/api/settings/reset', { method: 'POST' })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message);
+                location.reload();
+            });
+    });
+
+    // Apply theme dynamically
+    function applyTheme(theme) {
+        const body = document.body;
+        body.className = '';
+        if (theme.includes("Light")) {
+            body.style.background = "#f5f5f5";
+            body.style.color = "#111";
+        } else {
+            body.style.background = "#0A0E17";
+            body.style.color = "#fff";
+        }
+    }
+
+    // Apply language from dictionary
+    function applyLanguage(lang) {
+        const dictionary = {
+            "Spanish": {
+                "System Settings": "Configuraciones del sistema",
+                "Configure your solar energy system preferences": "Configura tus preferencias del sistema solar"
+            },
+            "French": {
+                "System Settings": "Paramètres du système",
+                "Configure your solar energy system preferences": "Configurer vos préférences système solaire"
+            },
+            "German": {
+                "System Settings": "Systemeinstellungen",
+                "Configure your solar energy system preferences": "Konfigurieren Sie Ihre Solarsystemeinstellungen"
+            }
+        };
+        const translations = dictionary[lang];
+        if (!translations) return;
+
+        document.querySelectorAll("h2, p, label").forEach(el => {
+            const t = translations[el.textContent];
+            if (t) el.textContent = t;
+        });
+    }
+
+    // Password update
+    document.querySelector("button.btn-primary.update-security")?.addEventListener("click", () => {
+        const newPass = document.getElementById("password").value;
+        const confirm = document.getElementById("confirm-password").value;
+
+        fetch('/api/settings/security', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ new_password: newPass, confirm_password: confirm })
+        })
+        .then(res => res.json())
+        .then(data => alert(data.message || data.error));
+    });
+
+    // Save system configuration
+    document.querySelector("button.btn-primary:nth-of-type(2)")?.addEventListener("click", () => {
+        const config = {
+            battery_mode: document.getElementById("battery-mode").value,
+            export_limit: parseInt(document.getElementById("export-limit").value),
+            storm_mode: document.getElementById("storm-mode").checked,
+            remote_access: document.getElementById("remote-access").checked
+        };
+
+        fetch('/api/settings/config', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(config)
+        })
+        .then(res => res.json())
+        .then(data => alert(data.message));
+    });
+
+    // Save alerts
+    document.querySelector("button.btn-primary:nth-of-type(3)")?.addEventListener("click", () => {
+        const alerts = {
+            email: document.getElementById("email-alerts").checked,
+            push: document.getElementById("push-alerts").checked,
+            sms: document.getElementById("sms-alerts").checked,
+            types: {
+                system: document.getElementById("system-alerts").checked,
+                maintenance: document.getElementById("maintenance-alerts").checked,
+                weather: document.getElementById("weather-alerts").checked
+            }
+        };
+
+        fetch('/api/settings/alerts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(alerts)
+        })
+        .then(res => res.json())
+        .then(data => alert(data.message));
+    });
+
+    // 2FA mobile prompt
+    document.getElementById("two-factor").addEventListener("change", () => {
+        if (document.getElementById("two-factor").checked) {
+            const phone = prompt("Enter your mobile number for OTP:");
+            if (phone) {
+                fetch('/api/settings/2fa', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone })
+                })
+                .then(res => res.json())
+                .then(data => alert(data.message || "2FA enabled"));
+            }
+        }
+    });
+});
+</script>
+<!-- Floating Chat Bubble UI -->
+<div id="sol-chat-container">
+  <div id="sol-response"></div>
+  <button id="mic-button" onclick="startListening()">
+    🎙️ Ask Sol
+  </button>
+</div>
+
+<style>
+  #sol-chat-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+  }
+
+  #mic-button {
+    border: none;
+    padding: 12px 18px;
+    border-radius: 40px;
+    background: linear-gradient(to right, #ffa500, #28a745);
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    gap: 10px;
+  }
+
+  #sol-response {
+    background-color: #fff;
+    padding: 10px 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    display: none;
+    max-width: 300px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    font-family: sans-serif;
+    color: #333;
+  }
+</style>
+    <!-- Voice Assistant same as dashboard -->
+     <script src="chatbot.js"></script>
+</body>
+</html>

@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SolarSense | Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.css">
+    <style>
+        :root {
+            --cosmic-deep: #0A0E17;
+            --solar-flare: #FF4D00;
+            --energy-core: #FFB800;
+            --quantum-teal: #00E3CC;
+            --starlight: rgba(255,255,255,0.9);
+            --glass-white: rgba(255,255,255,0.1);
+            --glass-border: rgba(255,255,255,0.2);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 180, 0, 0.15) 0%, transparent 25%),
+                radial-gradient(circle at 80% 70%, rgba(0, 227, 204, 0.15) 0%, transparent 25%),
+                linear-gradient(to bottom, #0A0E17, #0F1A2F);
+            color: var(--starlight);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><circle cx="50" cy="50" r="40" fill="none" stroke="%23FF6B35" stroke-width="0.5" stroke-opacity="0.3"/></svg>');
+            background-size: 50px 50px;
+            opacity: 0.3;
+            z-index: -1;
+            animation: solarPulse 20s infinite alternate;
+        }
+        
+        @keyframes solarPulse {
+            0% { opacity: 0.1; transform: scale(0.95); }
+            100% { opacity: 0.4; transform: scale(1.05); }
+        }
+        
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            background: rgba(10, 14, 23, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-right: 1px solid var(--glass-border);
+            padding: 2rem 1.5rem;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 3rem;
+            padding: 0 0.5rem;
+        }
+        
+        .logo-icon {
+            font-size: 2rem;
+            color: var(--energy-core);
+            margin-right: 1rem;
+            text-shadow: 0 0 15px rgba(255, 180, 0, 0.5);
+        }
+        
+        .logo-text {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--energy-core), var(--solar-flare));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .nav-item {
+            margin-bottom: 0.75rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 180, 0, 0.1), transparent);
+            transition: 0.5s;
+        }
+        
+        .nav-item:hover::before {
+            left: 100%;
+        }
+        
+        .nav-item.active {
+            background: linear-gradient(90deg, rgba(255, 180, 0, 0.1), transparent);
+            border-left: 3px solid var(--energy-core);
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            color: var(--starlight);
+            text-decoration: none;
+            padding: 0.8rem 1rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link i {
+            margin-right: 1rem;
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        
+        .nav-item.active .nav-link {
+            color: var(--energy-core);
+        }
+        
+        .nav-item:hover .nav-link {
+            transform: translateX(5px);
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            padding: 2rem 3rem;
+            position: relative;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+        }
+        
+        .page-title h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--starlight);
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-title p {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.95rem;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--energy-core);
+        }
+        
+        .user-name {
+            font-weight: 600;
+        }
+        
+        .notification-btn {
+            background: none;
+            border: none;
+            color: var(--starlight);
+            font-size: 1.2rem;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--solar-flare);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Stats Cards */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        
+        .stat-card {
+            background: var(--glass-white);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 70% 30%, rgba(255, 180, 0, 0.05), transparent 50%);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .stat-card h3 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 0.8rem;
+        }
+        
+        .stat-card .value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(to right, var(--starlight), var(--quantum-teal));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .stat-card .trend {
+            display: flex;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+        
+        .trend.up {
+            color: var(--quantum-teal);
+        }
+        
+        .trend.down {
+            color: #FF6B6B;
+        }
+        
+        .trend i {
+            margin-right: 0.5rem;
+        }
+        
+        /* Charts Section */
+        .charts-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        
+        @media (max-width: 1200px) {
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .chart-card {
+            background: var(--glass-white);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s ease;
+        }
+        
+        .chart-card:hover {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .chart-header h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            color: var(--starlight);
+        }
+        
+        .time-filter {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 0.3rem;
+            display: flex;
+        }
+        
+        .time-filter button {
+            background: none;
+            border: none;
+            padding: 0.4rem 1rem;
+            font-size: 0.8rem;
+            border-radius: 20px;
+            cursor: pointer;
+            color: rgba(255,255,255,0.7);
+            transition: all 0.3s ease;
+        }
+        
+        .time-filter button.active {
+            background: var(--energy-core);
+            color: var(--cosmic-deep);
+            font-weight: 600;
+        }
+        
+        .chart-wrapper {
+            height: 250px;
+            position: relative;
+        }
+        
+        /* Suggestions Section */
+        .suggestions-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+        
+        @media (max-width: 1200px) {
+            .suggestions-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .suggestions-card {
+            background: var(--glass-white);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--glass-border);
+        }
+        
+        .suggestions-card h3 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--starlight);
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .suggestions-card h3 i {
+            margin-right: 0.8rem;
+            color: var(--energy-core);
+        }
+        
+        .suggestion-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1.2rem;
+            padding-bottom: 1.2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .suggestion-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .suggestion-item:hover {
+            transform: translateX(5px);
+        }
+        
+        .suggestion-icon {
+            background-color: rgba(255, 180, 0, 0.1);
+            color: var(--energy-core);
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            flex-shrink: 0;
+            font-size: 1rem;
+        }
+        
+        .suggestion-content h4 {
+            margin: 0 0 0.5rem;
+            font-size: 0.95rem;
+            color: var(--starlight);
+        }
+        
+        .suggestion-content p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.7);
+            line-height: 1.5;
+        }
+        
+        .suggestion-priority {
+            display: inline-block;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            margin-top: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .priority-high {
+            background-color: rgba(255, 107, 53, 0.2);
+            color: var(--solar-flare);
+            border-left: 3px solid var(--solar-flare);
+        }
+        
+        .priority-medium {
+            background-color: rgba(255, 180, 0, 0.2);
+            color: var(--energy-core);
+            border-left: 3px solid var(--energy-core);
+        }
+        
+        .priority-low {
+            background-color: rgba(0, 227, 204, 0.2);
+            color: var(--quantum-teal);
+            border-left: 3px solid var(--quantum-teal);
+        }
+        
+        /* Solar Weather Map */
+        .solar-weather {
+            background: var(--glass-white);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 1.5rem;
+        }
+        
+        .solar-weather h3 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--starlight);
+            margin-top: 0;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .solar-weather h3 i {
+            margin-right: 0.8rem;
+            color: var(--energy-core);
+        }
+        
+        .weather-map {
+            height: 200px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        
+        #solarMap {
+            height: 100%;
+            width: 100%;
+            background: #0A0E17;
+        }
+        
+        .weather-legend {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .legend-item .icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        
+        .legend-item .sun {
+            background: var(--energy-core);
+            box-shadow: 0 0 8px var(--energy-core);
+        }
+        
+        .legend-item .cloud {
+            background: #666;
+            box-shadow: 0 0 8px #666;
+        }
+        
+        .legend-item .storm {
+            background: #FF4D00;
+            box-shadow: 0 0 8px #FF4D00;
+        }
+        
+        .weather-alerts {
+            margin-top: 1rem;
+        }
+        
+        .alert {
+            background: rgba(255, 107, 53, 0.2);
+            border-left: 3px solid var(--solar-flare);
+            padding: 0.8rem 1rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .alert i {
+            margin-right: 0.8rem;
+            color: var(--solar-flare);
+        }
+        
+        /* Voice Assistant */
+        .voice-assistant {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 100;
+        }
+        
+        .voice-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--energy-core), var(--solar-flare));
+            border: none;
+            color: var(--cosmic-deep);
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .voice-btn:hover {
+            transform: scale(1.1) translateY(-5px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+        }
+        
+        .voice-btn::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 50%;
+            border: 2px solid var(--energy-core);
+            animation: pulse 2s infinite;
+            opacity: 0;
+        }
+        
+        .voice-btn.listening::after {
+            opacity: 1;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(0.9); opacity: 0.7; }
+            70% { transform: scale(1.3); opacity: 0; }
+            100% { transform: scale(1.3); opacity: 0; }
+        }
+        
+        .voice-panel {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 300px;
+            background: rgba(10, 14, 23, 0.9);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1.2rem;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .voice-panel.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        
+        .voice-panel p {
+            margin-bottom: 1rem;
+            color: var(--starlight);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .wave-animation {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            height: 30px;
+            align-items: flex-end;
+        }
+        
+        .wave-dot {
+            width: 8px;
+            background: var(--quantum-teal);
+            border-radius: 4px;
+            animation: wave 1.2s infinite ease-in-out;
+        }
+        
+        .wave-dot:nth-child(1) { height: 10px; animation-delay: 0s; }
+        .wave-dot:nth-child(2) { height: 15px; animation-delay: 0.2s; }
+        .wave-dot:nth-child(3) { height: 20px; animation-delay: 0.4s; }
+        .wave-dot:nth-child(4) { height: 15px; animation-delay: 0.6s; }
+        .wave-dot:nth-child(5) { height: 10px; animation-delay: 0.8s; }
+        
+        @keyframes wave {
+            0%, 100% { height: 10px; }
+            50% { height: 20px; }
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .main-content {
+                padding: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .suggestions-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-solar-panel"></i>
+                </div>
+                <div class="logo-text">SolarSense</div>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item active">
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="fas fa-chart-line"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="analytics.html" class="nav-link">
+                        <i class="fas fa-chart-pie"></i>
+                        Analytics
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="impact.html" class="nav-link">
+                        <i class="fas fa-leaf"></i>
+                        Environmental Impact
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="emergency.html" class="nav-link">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Emergency System
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="maintenance.html" class="nav-link">
+                        <i class="fas fa-tools"></i>
+                        Maintenance
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="settings.html" class="nav-link">
+                        <i class="fas fa-cog"></i>
+                        Settings
+                    </a>
+                </li>
+            </ul>
+        </aside>
+        
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="header">
+                <div class="page-title">
+                    <h2>Dashboard Overview</h2>
+                    <p>Real-time monitoring of your solar energy system</p>
+                </div>
+                <div class="user-profile">
+                    <button class="notification-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User" class="user-avatar">
+                    <span class="user-name">MRS.AS</span>
+                </div>
+            </div>
+            
+            <!-- Stats Cards -->
+            <div class="stats-container">
+                <div class="stat-card">
+                    <h3>Current Power Generation</h3>
+                    <p class="value">3.42 kW</p>
+                    <div class="trend up">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>12% from yesterday</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <h3>Energy Consumed Today</h3>
+                    <p class="value">14.8 kWh</p>
+                    <div class="trend down">
+                        <i class="fas fa-arrow-down"></i>
+                        <span>5% from yesterday</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <h3>Battery Storage</h3>
+                    <p class="value">78%</p>
+                    <div class="trend up">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>Charging at 1.2kW</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <h3>CO₂ Saved Today</h3>
+                    <p class="value">12.4 kg</p>
+                    <div class="trend up">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>Equivalent to 3 trees</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Solar Weather Map -->
+            <div class="solar-weather">
+                <h3><i class="fas fa-satellite-dish"></i> Live Solar Weather</h3>
+                <div class="weather-map">
+                    <div id="solarMap"></div>
+                </div>
+                <div class="weather-legend">
+                    <div class="legend-item"><span class="icon sun"></span> Optimal Generation</div>
+                    <div class="legend-item"><span class="icon cloud"></span> Reduced Output</div>
+                    <div class="legend-item"><span class="icon storm"></span> Severe Impact</div>
+                </div>
+                <div class="weather-alerts">
+                    <div class="alert active">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Solar Flare Warning:</strong> Expected moderate impact on generation tomorrow
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Charts Section -->
+            <div class="charts-container">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Energy Generation & Usage</h3>
+                        <div class="time-filter">
+                            <button class="active">24h</button>
+                            <button>7d</button>
+                            <button>30d</button>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="energyChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>System Efficiency</h3>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="efficiencyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Suggestions Section -->
+            <div class="suggestions-container">
+                <div class="suggestions-card">
+                    <h3><i class="fas fa-robot"></i> AI Energy Suggestions</h3>
+                    
+                    <div class="suggestion-item">
+                        <div class="suggestion-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div class="suggestion-content">
+                            <h4>Shift high-load activities to 1-3 PM</h4>
+                            <p>Your solar generation peaks during these hours. Running appliances now maximizes solar usage.</p>
+                            <span class="suggestion-priority priority-high">High Impact</span>
+                        </div>
+                    </div>
+                    
+                    <div class="suggestion-item">
+                        <div class="suggestion-icon">
+                            <i class="fas fa-cloud-sun"></i>
+                        </div>
+                        <div class="suggestion-content">
+                            <h4>Tomorrow's forecast: Partly cloudy</h4>
+                            <p>Expected generation will be 15% lower than today. Consider conserving energy where possible.</p>
+                            <span class="suggestion-priority priority-medium">Medium Impact</span>
+                        </div>
+                    </div>
+                    
+                    <div class="suggestion-item">
+                        <div class="suggestion-icon">
+                            <i class="fas fa-tint"></i>
+                        </div>
+                        <div class="suggestion-content">
+                            <h4>Panel cleaning recommended</h4>
+                            <p>Efficiency has dropped 5% over the past week. Cleaning panels could restore full capacity.</p>
+                            <span class="suggestion-priority priority-low">Low Impact</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="suggestions-card">
+                    <h3><i class="fas fa-network-wired"></i> Grid Status</h3>
+                    <div class="suggestion-item">
+                        <div class="suggestion-icon">
+                            <i class="fas fa-plug"></i>
+                        </div>
+                        <div class="suggestion-content">
+                            <h4>Grid Connection Stable</h4>
+                            <p>No fluctuations detected. Exporting 0.8kW to grid currently.</p>
+                        </div>
+                    </div>
+                    <div class="suggestion-item">
+                        <div class="suggestion-icon">
+                            <i class="fas fa-battery-full"></i>
+                        </div>
+                        <div class="suggestion-content">
+                            <h4>Battery Health Excellent</h4>
+                            <p>98% capacity retention after 500 cycles (expected 95%).</p>
+                        </div>
+                    </div>
+                    <div class="suggestion-item">
+                        <div class="suggestion-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="suggestion-content">
+                            <h4>System Security</h4>
+                            <p>All systems secure. Last scan: 15 minutes ago.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Voice Assistant -->
+    <div class="voice-assistant">
+        <button class="voice-btn" id="voiceBtn">
+            <i class="fas fa-robot"></i>
+        </button>
+        <div class="voice-panel" id="voicePanel">
+            <p>Hello! I'm Sol, your solar assistant. How can I help?</p>
+            <div class="wave-animation">
+                <div class="wave-dot"></div>
+                <div class="wave-dot"></div>
+                <div class="wave-dot"></div>
+                <div class="wave-dot"></div>
+                <div class="wave-dot"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Chart.js and custom JS -->
+<script>
+let energyChart, efficiencyChart, solarMap, voiceActive = false;
+
+// Initialize the dashboard charts
+function initDashboardCharts() {
+    const energyCtx = document.getElementById('energyChart').getContext('2d');
+    energyChart = new Chart(energyCtx, {
+        type: 'line',
+        data: {
+            labels: Array.from({ length: 24 }, (_, i) => `${i}:00`),
+            datasets: [
+                {
+                    label: 'Generation (kW)',
+                    data: Array(24).fill(0),
+                    borderColor: '#00E3CC',
+                    backgroundColor: 'rgba(0, 227, 204, 0.1)',
+                    tension: 0.3,
+                    fill: true
+                },
+                {
+                    label: 'Usage (kW)',
+                    data: Array(24).fill(0),
+                    borderColor: '#FFB800',
+                    backgroundColor: 'rgba(255, 184, 0, 0.1)',
+                    tension: 0.3,
+                    fill: true
+                }
+            ]
+        },
+        options: {
+            plugins: { legend: { labels: { color: '#fff' } } },
+            scales: {
+                x: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                y: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } }
+            }
+        }
+    });
+
+    const effCtx = document.getElementById('efficiencyChart').getContext('2d');
+    efficiencyChart = new Chart(effCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['System Efficiency', 'Loss'],
+            datasets: [{
+                data: [92, 8],
+                backgroundColor: ['#00E3CC', '#FF4D00'],
+                borderColor: ['#00E3CC', '#FF4D00'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            plugins: {
+                legend: { labels: { color: '#fff' } }
+            },
+            cutout: '70%'
+        }
+    });
+}
+
+// Initialize Leaflet map
+function initMap(weather) {
+    if (!solarMap) {
+        solarMap = L.map('solarMap').setView([20.5937, 78.9629], 4);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(solarMap);
+    }
+
+    let color = weather === 'sunny' ? '#FFB800' : (weather === 'cloudy' ? '#888' : '#FF4D00');
+    let glow = weather === 'sunny' ? '#FFD700' : (weather === 'cloudy' ? '#AAA' : '#FF4D00');
+
+    L.circle([20.5937, 78.9629], {
+        color: color,
+        fillColor: glow,
+        fillOpacity: 0.4,
+        radius: 50000
+    }).addTo(solarMap);
+}
+
+// Voice Assistant
+function initVoiceAssistant() {
+    const btn = document.getElementById("voiceBtn");
+    const panel = document.getElementById("voicePanel");
+
+    btn.addEventListener("click", () => {
+        voiceActive = !voiceActive;
+        panel.classList.toggle("active", voiceActive);
+        btn.classList.toggle("listening", voiceActive);
+
+        if (voiceActive) {
+            const msg = new SpeechSynthesisUtterance("Hello! I'm Sol, your assistant. Ask me anything.");
+            window.speechSynthesis.speak(msg);
+        } else {
+            window.speechSynthesis.cancel();
+        }
+    });
+}
+
+// Live data updates every 5 seconds
+function updateData() {
+    fetch('http://localhost:5000/api/solar-data')
+        .then(res => res.json())
+        .then(data => {
+            // Update stats
+            document.querySelectorAll('.stat-card .value')[0].textContent = `${data.generation} kW`;
+            document.querySelectorAll('.stat-card .value')[1].textContent = `${(data.usage * 3).toFixed(1)} kWh`;
+            document.querySelectorAll('.stat-card .value')[2].textContent = `${data.battery}%`;
+            document.querySelectorAll('.stat-card .value')[3].textContent = `${data.co2_saved} kg`;
+
+            // Update energyChart
+            const now = new Date().getHours();
+            energyChart.data.datasets[0].data[now] = data.generation;
+            energyChart.data.datasets[1].data[now] = data.usage;
+            energyChart.update();
+
+            // Update map weather
+            initMap(data.weather);
+        });
+}
+
+// Init everything
+window.addEventListener('DOMContentLoaded', () => {
+    initDashboardCharts();
+    initVoiceAssistant();
+    updateData();
+    setInterval(updateData, 5000);
+});
+</script>
+<!-- Floating Chat Bubble UI -->
+<div id="sol-chat-container">
+  <div id="sol-response"></div>
+  <button id="mic-button" onclick="startListening()">
+    🎙️ Ask Sol
+  </button>
+</div>
+
+<style>
+  #sol-chat-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+  }
+
+  #mic-button {
+    border: none;
+    padding: 12px 18px;
+    border-radius: 40px;
+    background: linear-gradient(to right, #ffa500, #28a745);
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    gap: 10px;
+  }
+
+  #sol-response {
+    background-color: #fff;
+    padding: 10px 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    display: none;
+    max-width: 300px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    font-family: sans-serif;
+    color: #333;
+  }
+</style>
+
+<script src="chatbot.js"></script>
+
+
+</body>
+</html>

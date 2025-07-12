@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SolarSense | Environmental Impact</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --cosmic-deep: #0A0E17;
+            --solar-flare: #FF4D00;
+            --energy-core: #FFB800;
+            --quantum-teal: #00E3CC;
+            --eco-emerald: #4ECDC4;
+            --alert-red: #FF3A20;
+            --starlight: rgba(255,255,255,0.9);
+            --glass-white: rgba(255,255,255,0.1);
+            --glass-border: rgba(255,255,255,0.2);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 180, 0, 0.15) 0%, transparent 25%),
+                radial-gradient(circle at 80% 70%, rgba(0, 227, 204, 0.15) 0%, transparent 25%),
+                linear-gradient(to bottom, #0A0E17, #0F1A2F);
+            color: var(--starlight);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><circle cx="50" cy="50" r="40" fill="none" stroke="%23FF6B35" stroke-width="0.5" stroke-opacity="0.3"/></svg>');
+            background-size: 50px 50px;
+            opacity: 0.3;
+            z-index: -1;
+            animation: solarPulse 20s infinite alternate;
+        }
+        
+        @keyframes solarPulse {
+            0% { opacity: 0.1; transform: scale(0.95); }
+            100% { opacity: 0.4; transform: scale(1.05); }
+        }
+        
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            background: rgba(10, 14, 23, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-right: 1px solid var(--glass-border);
+            padding: 2rem 1.5rem;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 3rem;
+            padding: 0 0.5rem;
+        }
+        
+        .logo-icon {
+            font-size: 2rem;
+            color: var(--energy-core);
+            margin-right: 1rem;
+            text-shadow: 0 0 15px rgba(255, 180, 0, 0.5);
+        }
+        
+        .logo-text {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--energy-core), var(--solar-flare));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .nav-item {
+            margin-bottom: 0.75rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 180, 0, 0.1), transparent);
+            transition: 0.5s;
+        }
+        
+        .nav-item:hover::before {
+            left: 100%;
+        }
+        
+        .nav-item.active {
+            background: linear-gradient(90deg, rgba(255, 180, 0, 0.1), transparent);
+            border-left: 3px solid var(--energy-core);
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            color: var(--starlight);
+            text-decoration: none;
+            padding: 0.8rem 1rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link i {
+            margin-right: 1rem;
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        
+        .nav-item.active .nav-link {
+            color: var(--energy-core);
+        }
+        
+        .nav-item:hover .nav-link {
+            transform: translateX(5px);
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            padding: 2rem 3rem;
+            position: relative;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+        }
+        
+        .page-title h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--starlight);
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-title p {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.95rem;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--energy-core);
+        }
+        
+        .user-name {
+            font-weight: 600;
+        }
+        
+        .notification-btn {
+            background: none;
+            border: none;
+            color: var(--starlight);
+            font-size: 1.2rem;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--solar-flare);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Impact Hero Section */
+        .impact-hero {
+            background: linear-gradient(135deg, rgba(10, 14, 23, 0.9), rgba(15, 26, 47, 0.9));
+            color: var(--starlight);
+            border-radius: 12px;
+            padding: 3rem 2rem;
+            margin-bottom: 2.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+        }
+        
+        .impact-hero h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .impact-hero p {
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .impact-hero .hero-icon {
+            position: absolute;
+            font-size: 10rem;
+            opacity: 0.15;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1;
+            color: var(--energy-core);
+        }
+        
+        /* Stats Cards */
+        .impact-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        
+        .impact-stat {
+            background: var(--glass-white);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .impact-stat:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .impact-stat::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 70% 30%, rgba(78, 205, 196, 0.1), transparent 50%);
+        }
+        
+        .impact-stat-icon {
+            font-size: 2.5rem;
+            color: var(--energy-core);
+            margin-bottom: 1rem;
+        }
+        
+        .impact-stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--starlight);
+            margin: 0.5rem 0;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .impact-stat-label {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.7);
+        }
+        
+        /* Timeline */
+        .impact-timeline {
+            background: var(--glass-white);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 2.5rem;
+        }
+        
+        .impact-timeline h3 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--starlight);
+            margin-top: 0;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .impact-timeline h3 i {
+            margin-right: 0.8rem;
+            color: var(--energy-core);
+        }
+        
+        .timeline-container {
+            position: relative;
+            padding-left: 3rem;
+            margin-top: 2rem;
+        }
+        
+        .timeline-line {
+            position: absolute;
+            left: 1.5rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--energy-core);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .timeline-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .timeline-dot {
+            position: absolute;
+            left: -3rem;
+            top: 0;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background: var(--energy-core);
+            color: var(--cosmic-deep);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            box-shadow: 0 0 10px rgba(255, 180, 0, 0.5);
+        }
+        
+        .timeline-date {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: var(--starlight);
+        }
+        
+        .timeline-content h4 {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            color: var(--starlight);
+        }
+        
+        .timeline-content p {
+            margin-bottom: 0;
+            color: rgba(255,255,255,0.7);
+        }
+        
+        /* Comparison Chart */
+        .impact-comparison {
+            background: var(--glass-white);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 2.5rem;
+        }
+        
+        .comparison-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .comparison-header h3 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--starlight);
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .comparison-header h3 i {
+            margin-right: 0.8rem;
+            color: var(--energy-core);
+        }
+        
+        .comparison-chart {
+            height: 300px;
+            margin-top: 1.5rem;
+        }
+        
+        /* Leaderboard */
+        .leaderboard-section {
+            background: var(--glass-white);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--glass-border);
+        }
+        
+        .leaderboard-section h2 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--starlight);
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .leaderboard-section h2 i {
+            margin-right: 0.8rem;
+            color: var(--energy-core);
+        }
+        
+        .leaderboard-container {
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .leaderboard-header {
+            display: grid;
+            grid-template-columns: 60px 2fr 1fr 1fr;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.8rem 1rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        .leaderboard-content {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .leaderboard-item {
+            display: grid;
+            grid-template-columns: 60px 2fr 1fr 1fr;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .leaderboard-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .leaderboard-item.top-1 {
+            background: linear-gradient(90deg, rgba(255, 180, 0, 0.1), transparent);
+        }
+        
+        .leaderboard-item.top-2 {
+            background: linear-gradient(90deg, rgba(192, 192, 192, 0.1), transparent);
+        }
+        
+        .leaderboard-item.top-3 {
+            background: linear-gradient(90deg, rgba(205, 127, 50, 0.1), transparent);
+        }
+        
+        .leaderboard-item.current-user {
+            background: linear-gradient(90deg, rgba(0, 227, 204, 0.2), transparent);
+            border-left: 3px solid var(--energy-core);
+        }
+        
+        .rank {
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .user {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .user img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .badge {
+            margin-left: auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .co2, .trees {
+            font-weight: 600;
+        }
+        
+        .leaderboard-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .leaderboard-actions button {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--starlight);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .leaderboard-actions button:hover {
+            background: rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .share-btn {
+            background: linear-gradient(90deg, var(--energy-core), var(--solar-flare)) !important;
+            color: var(--cosmic-deep) !important;
+        }
+        
+        .challenge-btn {
+            background: linear-gradient(90deg, var(--quantum-teal), var(--eco-emerald)) !important;
+            color: var(--cosmic-deep) !important;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .main-content {
+                padding: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .impact-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .leaderboard-header {
+                grid-template-columns: 40px 2fr 1fr 1fr;
+                font-size: 0.75rem;
+            }
+            
+            .leaderboard-item {
+                grid-template-columns: 40px 2fr 1fr 1fr;
+                font-size: 0.85rem;
+            }
+            
+            .leaderboard-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-solar-panel"></i>
+                </div>
+                <div class="logo-text">SolarSense</div>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="fas fa-chart-line"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="analytics.html" class="nav-link">
+                        <i class="fas fa-chart-pie"></i>
+                        Analytics
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a href="impact.html" class="nav-link">
+                        <i class="fas fa-leaf"></i>
+                        Environmental Impact
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="emergency.html" class="nav-link">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Emergency System
+                    </a>
+                </li>
+            </ul>
+        </aside>
+        
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="header">
+                <div class="page-title">
+                    <h2>Environmental Impact</h2>
+                    <p>See how your solar system is making a difference</p>
+                </div>
+                <div class="user-profile">
+                    <button class="notification-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">1</span>
+                    </button>
+                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User" class="user-avatar">
+                    <span class="user-name">MRS. AS </span>
+                </div>
+            </div>
+            
+            <div class="impact-hero">
+                <i class="fas fa-earth-americas hero-icon"></i>
+                <h2>Your Solar Contribution</h2>
+                <p>By using solar energy, you're helping reduce carbon emissions and create a cleaner future for everyone.</p>
+            </div>
+            
+            <div class="impact-stats">
+                <div class="impact-stat">
+                    <div class="impact-stat-icon">
+                        <i class="fas fa-smog"></i>
+                    </div>
+                    <div class="impact-stat-value" id="co2-stat">0 kg</div>
+                    <div class="impact-stat-label">CO₂ Emissions Prevented</div>
+                </div>
+                <div class="impact-stat">
+                    <div class="impact-stat-icon">
+                        <i class="fas fa-tree"></i>
+                    </div>
+                    <div class="impact-stat-value" id="trees-stat">0</div>
+                    <div class="impact-stat-label">Tree Equivalents</div>
+                </div>
+                <div class="impact-stat">
+                    <div class="impact-stat-icon">
+                        <i class="fas fa-gas-pump"></i>
+                    </div>
+                    <div class="impact-stat-value" id="gas-stat">0 L</div>
+                    <div class="impact-stat-label">Gasoline Not Burned</div>
+                </div>
+                <div class="impact-stat">
+                    <div class="impact-stat-icon">
+                        <i class="fas fa-car"></i>
+                    </div>
+                    <div class="impact-stat-value" id="miles-stat">0 km</div>
+                    <div class="impact-stat-label">Car Miles Offset</div>
+                </div>
+            </div>
+            
+            <div class="impact-timeline">
+                <h3><i class="fas fa-history"></i> Your Environmental Milestones</h3>
+                <div class="timeline-container">
+                    <div class="timeline-line"></div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-dot">
+                            <i class="fas fa-seedling"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">June 2025</div>
+                            <h4>100 Trees Equivalent</h4>
+                            <p>Your system has now saved enough CO₂ to equal the annual absorption of 100 trees.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-dot">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">April 2025</div>
+                            <h4>1 Ton CO₂ Prevented</h4>
+                            <p>Congratulations! You've reached the milestone of preventing 1,000 kg of CO₂ emissions.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-dot">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">January 2025</div>
+                            <h4>System Installation</h4>
+                            <p>Your solar journey began! Since then, you've been making a positive environmental impact every day.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="impact-comparison">
+                <div class="comparison-header">
+                    <h3><i class="fas fa-chart-bar"></i> Your Impact vs. Average Household</h3>
+                </div>
+                <p>See how your solar usage compares to typical energy consumption in your area.</p>
+                <div class="comparison-chart">
+                    <canvas id="comparisonChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="leaderboard-section">
+                <h2><i class="fas fa-trophy"></i> Community Impact Leaderboard</h2>
+                <div class="leaderboard-container">
+                    <div class="leaderboard-header">
+                        <span>Rank</span>
+                        <span>User</span>
+                        <span>CO₂ Saved</span>
+                        <span>Trees</span>
+                    </div>
+                    <div class="leaderboard-content">
+                        <!-- Top 3 with special badges -->
+                        <div class="leaderboard-item top-1">
+                            <span class="rank">1</span>
+                            <span class="user">
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User">
+                                SolarMaster
+                                <span class="badge"><i class="fas fa-crown"></i> Champion</span>
+                            </span>
+                            <span class="co2">2,456 kg</span>
+                            <span class="trees">614</span>
+                        </div>
+                        <div class="leaderboard-item top-2">
+                            <span class="rank">2</span>
+                            <span class="user">
+                                <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="User">
+                                GreenWarrior
+                                <span class="badge"><i class="fas fa-medal"></i> Elite</span>
+                            </span>
+                            <span class="co2">2,128 kg</span>
+                            <span class="trees">532</span>
+                        </div>
+                        <div class="leaderboard-item top-3">
+                            <span class="rank">3</span>
+                            <span class="user">
+                                <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="User">
+                                EcoChampion
+                                <span class="badge"><i class="fas fa-medal"></i> Elite</span>
+                            </span>
+                            <span class="co2">1,987 kg</span>
+                            <span class="trees">497</span>
+                        </div>
+                        
+                        <!-- More users -->
+                        <div class="leaderboard-item">
+                            <span class="rank">4</span>
+                            <span class="user">
+                                <img src="https://randomuser.me/api/portraits/women/42.jpg" alt="User">
+                                SunLover
+                            </span>
+                            <span class="co2">1,756 kg</span>
+                            <span class="trees">439</span>
+                        </div>
+                        <div class="leaderboard-item">
+                            <span class="rank">5</span>
+                            <span class="user">
+                                <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="User">
+                                RenewableKing
+                            </span>
+                            <span class="co2">1,632 kg</span>
+                            <span class="trees">408</span>
+                        </div>
+                        <div class="leaderboard-item">
+                            <span class="rank">6</span>
+                            <span class="user">
+                                <img src="https://randomuser.me/api/portraits/women/33.jpg" alt="User">
+                                EcoWarrior
+                            </span>
+                            <span class="co2">1,489 kg</span>
+                            <span class="trees">372</span>
+                        </div>
+                        
+                        <!-- Current user highlighted -->
+                        <div class="leaderboard-item current-user">
+                            <span class="rank">7</span>
+                            <span class="user">
+                                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="You">
+                                You (MRS.AS)
+                                <span class="badge"><i class="fas fa-user"></i> You</span>
+                            </span>
+                            <span class="co2">1,248 kg</span>
+                            <span class="trees">312</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="leaderboard-actions">
+                    <button class="share-btn">
+                        <i class="fas fa-share-alt"></i> Share Your Impact
+                    </button>
+                    <button class="challenge-btn">
+                        <i class="fas fa-fire"></i> Weekly Challenge
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Chart.js and custom JS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+    async function fetchSolarData() {
+        try {
+            const res = await fetch("http://localhost:5000/api/solar-data");
+            return await res.json();
+        } catch (err) {
+            console.error("Failed to load solar data:", err);
+            return {
+                co2_saved: 1248,
+                trees_saved: 312,
+                usage: 3.4,
+                generation: 4.1
+            }; // fallback dummy data
+        }
+    }
+
+    function animateValue(id, start, end, duration, suffix = "") {
+        const obj = document.getElementById(id);
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            obj.textContent = Math.floor(progress * (end - start) + start) + suffix;
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            }
+        };
+        window.requestAnimationFrame(step);
+    }
+
+    function setupSharing(co2, trees) {
+        const shareText = `🌱 I’ve saved ${co2} kg of CO₂ and planted ${trees} trees using solar energy via #SolarSense! ☀️`;
+        const encodedText = encodeURIComponent(shareText);
+        const whatsappURL = `https://wa.me/?text=${encodedText}`;
+        const twitterURL = `https://twitter.com/intent/tweet?text=${encodedText}`;
+
+        document.querySelector('.share-btn').addEventListener('click', () => {
+            const choice = confirm("Click OK to share on WhatsApp, Cancel for Twitter.");
+            window.open(choice ? whatsappURL : twitterURL, "_blank");
+        });
+    }
+
+    function renderComparisonChart(userUsage, userGen) {
+        const ctx = document.getElementById('comparisonChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Carbon Footprint', 'Grid Dependence', 'Energy Costs'],
+                datasets: [
+                    {
+                        label: 'Your Household',
+                        data: [
+                            (6.2 * (1 - Math.min(userGen / userUsage, 1))).toFixed(1),
+                            (100 - Math.min((userGen / userUsage) * 100, 100)).toFixed(0),
+                            (100 - Math.min((userGen / userUsage) * 100, 100)).toFixed(0)
+                        ],
+                        backgroundColor: 'rgba(255, 180, 0, 0.7)',
+                        borderColor: 'rgba(255, 180, 0, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Area Average',
+                        data: [6.2, 100, 100],
+                        backgroundColor: 'rgba(0, 227, 204, 0.7)',
+                        borderColor: 'rgba(0, 227, 204, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: 'rgba(255,255,255,0.8)'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(10, 14, 23, 0.9)',
+                        titleColor: '#FFB800',
+                        bodyColor: 'rgba(255,255,255,0.8)',
+                        borderColor: 'rgba(255,255,255,0.1)',
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) label += ': ';
+                                if (context.parsed.y !== null) label += context.parsed.y + '%';
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            },
+                            color: 'rgba(255,255,255,0.7)'
+                        },
+                        grid: {
+                            color: 'rgba(255,255,255,0.1)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(255,255,255,0.1)'
+                        },
+                        ticks: {
+                            color: 'rgba(255,255,255,0.7)'
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    window.addEventListener('load', async () => {
+        const data = await fetchSolarData();
+        const co2 = Math.round(data.co2_saved * 100); // cumulative total (e.g. 12.4 => 1240kg)
+        const trees = data.trees_saved;
+        const gas = Math.round(co2 * 0.42);     // Approximate formula
+        const miles = Math.round(co2 * 3.3);    // Approximate formula
+
+        animateValue('co2-stat', 0, co2, 2000, ' kg');
+        animateValue('trees-stat', 0, trees, 2000);
+        animateValue('gas-stat', 0, gas, 2000, ' L');
+        animateValue('miles-stat', 0, miles, 2000, ' km');
+
+        setupSharing(co2, trees);
+        renderComparisonChart(data.usage, data.generation);
+    });
+</script>
+<!-- Floating Chat Bubble UI -->
+<div id="sol-chat-container">
+  <div id="sol-response"></div>
+  <button id="mic-button" onclick="startListening()">
+    🎙️ Ask Sol
+  </button>
+</div>
+
+<style>
+  #sol-chat-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+  }
+
+  #mic-button {
+    border: none;
+    padding: 12px 18px;
+    border-radius: 40px;
+    background: linear-gradient(to right, #ffa500, #28a745);
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    gap: 10px;
+  }
+
+  #sol-response {
+    background-color: #fff;
+    padding: 10px 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    display: none;
+    max-width: 300px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    font-family: sans-serif;
+    color: #333;
+  }
+</style>
+
+<script src="chatbot.js"></script>
+
+</body>
+</html>

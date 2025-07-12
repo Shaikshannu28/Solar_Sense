@@ -1,0 +1,47 @@
+2025-07-12 21:51:18.529433 - how can i help you today? how is the battery?
+2025-07-12 21:51:30.871678 - how can i help you today? how is the battery?
+User: how can i help you today?
+Bot: I'm still learning. Please ask about solar usage, battery, CO2, or impact.
+
+User: i'm seoul.
+Bot: I'm still learning. Please ask about solar usage, battery, CO2, or impact.
+
+User: hey, i'm saul.
+Bot: I'm still learning. Please ask about solar usage, battery, CO2, or impact.
+
+User: hey, i'm seoul.
+Bot: I'm still learning. Please ask about solar usage, battery, CO2, or impact.
+
+User: i'm seoul.
+Bot: I'm still learning. Please ask about solar usage, battery, CO2, or impact.
+
+User: i'm so.
+Bot: I'm still learning. Please ask about solar usage, battery, CO2, or impact.
+
+User: hey, i'm seoul.
+Bot: I'm still learning. Please ask about solar usage, battery, CO2, or impact.
+
+User: hey, i'm seoul.
+Bot: I'm still learning. Please ask about solar usage, battery, CO2, or impact.
+
+User: i'm seoul.
+Bot: I'm still learning. Please ask about solar usage, battery, CO2, or impact.
+
+User: ask about solar usage that.
+Bot: You can monitor your daily solar usage from the dashboard. Currently, it's 1.65 kWh.
+
+User: hey, i'm seoul.
+Bot: Hello! I'm your Solar Sense assistant. Ask me anything!
+
+User: hey i'm so how can i help you today? what was the battery usage today?
+Bot: The current battery level is 56.5%. 🔋
+
+User: hey, i'm seoul.
+Bot: Hello! I'm your Solar Sense assistant. Ask me anything!
+
+User: hey, i'm seoul.
+Bot: Hello! I'm your Solar Sense assistant. Ask me anything!
+
+User: hey, i'm saul, how can i help you? how much co2 has consumed today?
+Bot: The CO2 saved today is 9.4 kg. 🌱
+
